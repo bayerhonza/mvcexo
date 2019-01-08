@@ -15,14 +15,28 @@ public class Model {
 
     public void setPeople(ArrayList<Person> people) {
         this.people = people;
+        view.repaint();
     }
 
     public ArrayList<Person> getPeople() {
         return people;
     }
 
+    public Person createPerson(String name, String surname) {
+        Person newPerson = new Person(name,surname);
+        addPerson(newPerson);
+        return newPerson;
+    }
+
     public void addPerson(Person person) {
         people.add(person);
+        view.updatePersonPannels();
+        view.repaint();
+    }
+
+    public void removePerson(Person person) {
+        people.remove(person);
+        view.updatePersonPannels();
         view.repaint();
     }
 

@@ -7,13 +7,12 @@ import com.ensimag.rie.mvcexo.model.dao.PersonDAO;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class PersonDAOImpl implements PersonDAO {
+public class PersonDAOImpl {
 
 
     public PersonDAOImpl() throws SQLException {
     }
 
-    @Override
     public Person getPerson(int id,Connection dbConnection) {
         Person person = new Person();
         try {
@@ -31,22 +30,32 @@ public class PersonDAOImpl implements PersonDAO {
         return person;
     }
 
-    @Override
-    public void addPerson(Person person, Connection dbConnection) {
+    public void addPerson(Person person, Connection dbConnection) throws SQLException {
+        try {
+            PreparedStatement statement = dbConnection.prepareStatement("INSERT INTO PERSON(NOM,PRENOM) VALUES (?,?)");
+            statement.setString(1,person.getSurname());
+            statement.setString(2,person.getName());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
-    @Override
     public void updatePerson(Person person, Connection dbConnection) {
 
     }
 
-    @Override
-    public void removePerson(Person person, Connection dbConnection) {
-
+    public void removePerson(Integer personId, Connection dbConnection) {
+        try {
+            PreparedStatement statement = dbConnection.prepareStatement("DELETE FROM PERSON WHERE ID = ?");
+            statement.setInt(1,personId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    @Override
     public ArrayList<Person> getAllPeople(Connection dbConnection) {
         ArrayList<Person> allPeople = new ArrayList<>();
         try {

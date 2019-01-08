@@ -11,151 +11,110 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class View extends JFrame implements ActionListener, ComponentListener {
+public class View extends JFrame {
 
     private Model model;
     private Controller controller;
 
-    private MvcMenuBar menuBar;
+    ArrayList<PersonPanel> personPanels = new ArrayList<>();
+
     private JPanel mainPanel;
     private FlowLayout mainPanelLayout;
 
-    private Button add;
+    private JTextArea newNameTextArea;
+    private JTextArea newSurnameTextArea;
+    private AddPersonButton addButton;
+    private JButton refreshButton;
+    private JPanel textPanel;
 
-    boolean originalLabel = true;
 
-    private JTextField addNameText;
-    private JTextArea addSurnameText;
-    private JTextArea addDateOfBirth;
-
-    private Button remove;
-    private Button refresh;
-
-    public static void main(String[] args) {
-        View view = new View();
-        view.init();
-        /*java.awt.EventQueue.invokeLater(new Runnable() {
+    public static void main(String[] args) throws Exception {
+        SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-
+                View view = new View();
+                try {
+                    view.init();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                view.pack();
+                view.setVisible(true);
             }
-        });*/
+        });
     }
 
-    public void init() {
-        System.out.println("sfasdfasfd");
-        JButton btn1 = new JButton("Screensize");
-        JButton btn2 = new JButton("Screensize1");
-        JButton btn3 = new JButton("Screensize2");
-        JPanel pnl = new JPanel(new FlowLayout());
-        btn1.addActionListener(this);
-        btn2.addActionListener(this);
-        btn3.addActionListener(this);
+    public void updatePersonPannels() {
+        personPanels.clear();
+        model.getPeople().forEach(person -> {
+            PersonPanel personPanel = new PersonPanel(person,controller);
+            personPanels.add(personPanel);
+        } );
+    }
 
-        btn1.setPreferredSize(new Dimension(200,40));
-        btn2.setPreferredSize(new Dimension(200,40));
-        btn3.setPreferredSize(new Dimension(200,40));
-
-        pnl.setPreferredSize(new Dimension(640,480));
-        pnl.add(btn1,BorderLayout.CENTER);
-        pnl.add(btn2,BorderLayout.CENTER);
-        pnl.add(btn3,BorderLayout.CENTER);
-        addComponentListener(this);
-
-        add(pnl,BorderLayout.CENTER);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(true);
-        pack();
-        setVisible(true);
-
-        /*setPreferredSize(new Dimension(400,800));
-        menuBar = new MvcMenuBar("About");
-        setJMenuBar(menuBar);
-        setLocationRelativeTo(null);
-
-        FlowLayout flowLayout = new FlowLayout();
-        mainPanel = new JPanel(flowLayout);
-
-
-        this.add = new Button("Add");
-        this.remove = new Button("Remove");
-        this.refresh = new Button("Refresh");
-
-
-        add(this.add);
-        add(this.remove);
-        add(this.refresh);
-
-        setVisible(true);
-
+    public void init() throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
         this.model = new Model(this);
         try {
-            this.controller = new Controller(this.model,add,remove,refresh);
+            this.controller = new Controller(this.model, this);
+            controller.loadAllPeople();
         } catch (ServiceException e) {
-            return;
+            e.printStackTrace();
         }
 
-        String col[] = {"ID","Name","Surname"};
 
-        */
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setPreferredSize(new Dimension(800,400));
+        add(mainPanel);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(true);
 
-    }
+        textPanel = new JPanel(new FlowLayout());
+        textPanel.setPreferredSize(new Dimension(350,500));
 
+        updatePersonPannels();
+        personPanels.forEach(textPanel::add);
+        add(textPanel,BorderLayout.CENTER);
 
+        JPanel buttonsPanel = new JPanel(new FlowLayout());
+        buttonsPanel.setPreferredSize(new Dimension(500,100));
 
-    @Override
-    public void paint(Graphics g) {
-    }
-
-
-    @Override
-    public void actionPerformed(ActionEvent event) {
-        if (event.getSource() instanceof JButton) {
-            JButton button = (JButton) event.getSource();
-            setOriginalLabel(!originalLabel);
-            if (originalLabel) {
-                button.setLabel("Original label");
-            } else {
-                button.setLabel("new label");
+        newNameTextArea = new JTextArea("Name");
+        newNameTextArea.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                newNameTextArea.setText("");
             }
-            button.repaint();
 
-            /*Button sourceButton = (Button) event.getSource();
-            String cmd = sourceButton.getActionCommand();
-            if (cmd.equals(addButton.getActionCommand())) {
+            @Override
+            public void focusLost(FocusEvent e) {
+            }
+        });
+        buttonsPanel.add(newNameTextArea);
+        newSurnameTextArea = new JTextArea("Surname");
+        newSurnameTextArea.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                newSurnameTextArea.setText("");
+            }
 
-            } else if (cmd.equals(removeButton.getActionCommand())) {
-                model.removeAll();
-            } else if (cmd.equals(refreshButton.getActionCommand())) {
-                ArrayList<Person> allPeople = personService.getAllPeople();
-                model.setPeople(allPeople);
-                allPeople.forEach(p -> System.out.println("nom: " + p.getName() + " prenom: " + p.getSurname()));
-            }*/
-        }
+            @Override
+            public void focusLost(FocusEvent e) {
+            }
+        });
+        buttonsPanel.add(newSurnameTextArea);
+        addButton = new AddPersonButton(newNameTextArea,newSurnameTextArea,"Add");
+        addButton.addActionListener(controller);
+        refreshButton = new JButton("Refresh");
+        refreshButton.addActionListener(controller);
+        buttonsPanel.add(addButton);
+        buttonsPanel.add(refreshButton);
+        add(buttonsPanel,BorderLayout.SOUTH);
     }
 
-    public void setOriginalLabel(boolean isOriginal) {
-        this.originalLabel = isOriginal;
+    public void removePersonPanel(Person person) {
+        PersonPanel personPanelToBeRemoved = personPanels.stream().filter(personPanel -> personPanel.getPersonId() == person.getId()).findFirst().get();
+        textPanel.remove(personPanelToBeRemoved);
     }
 
-    @Override
-    public void componentResized(ComponentEvent e) {
-        repaint();
-    }
-
-    @Override
-    public void componentMoved(ComponentEvent e) {
-        System.out.println(e.paramString());
-    }
-
-    @Override
-    public void componentShown(ComponentEvent e) {
-        System.out.println(e.paramString());
-    }
-
-    @Override
-    public void componentHidden(ComponentEvent e) {
-        System.out.println(e.paramString());
-    }
 }

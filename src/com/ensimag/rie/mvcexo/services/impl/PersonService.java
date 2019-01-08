@@ -10,8 +10,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class PersonService {
-
-
     private Connection dbConnection;
     private static PersonService personService;
 
@@ -37,7 +35,11 @@ public class PersonService {
 
     public void addPerson(Person person) throws ServiceException {
         Connection connection = getCurrentDbConnection();
-        personDAO.addPerson(person,connection);
+        try {
+            personDAO.addPerson(person,connection);
+        } catch (SQLException e) {
+            throw new ServiceException();
+        }
     }
 
     public void updatePerson(Person person) throws ServiceException {
@@ -47,7 +49,7 @@ public class PersonService {
 
     public void removePerson(Person person) throws ServiceException {
         Connection connection = getCurrentDbConnection();
-        personDAO.removePerson(person,connection);
+        personDAO.removePerson(person.getId(),connection);
     }
 
     private Connection getCurrentDbConnection() {
