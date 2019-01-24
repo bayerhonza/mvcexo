@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,17 +23,22 @@ public class Controller implements ActionListener {
     private Model model;
     private View view;
 
-    public Controller(Model model, View view) throws ServiceException {
-        this.model = model;
+    public Controller(View view) throws ServiceException {
+        this.model = new Model(view);
         this.view = view;
         this.personService = PersonService.getInstance();
     }
 
     public PersonService getPersonService() { return this.personService;}
 
-    public void loadAllPeople() throws ServiceException {
-        ArrayList<Person> personList = personService.getAllPeople();
-        model.setPeople(personList);
+    public void loadAllPeople()  {
+        try {
+            ArrayList<Person> personList = personService.getAllPeople();
+            model.getPeople().addAll(personList);
+            personList.forEach(view::addPersonPanel);
+        } catch (SQLException e) {
+            System.out.println("Unexpected SQL exception: " + e.getMessage());
+        }
     }
 
     @Override
@@ -42,20 +48,22 @@ public class Controller implements ActionListener {
             DeletePersonButton deletePersonButton = (DeletePersonButton) source;
             Person deletedPerson = deletePersonButton.getPerson();
             try {
-                personService.removePerson(deletedPerson);
-                view.removePersonPanel(deletedPerson);
                 model.removePerson(deletedPerson);
-            } catch (ServiceException e1) {
+                personService.removePerson(deletedPerson);
+                view.revalidate();
+            } catch (SQLException e1) {
                 e1.printStackTrace();
             }
         } else if (source instanceof AddPersonButton) {
             AddPersonButton addPersonButton = (AddPersonButton) source;
             String newName = addPersonButton.getName();
             String newSurname = addPersonButton.getSurname();
-            Person newPerson = model.createPerson(newName, newSurname);
+
             try {
+                Person newPerson = model.createPerson(newName, newSurname);
                 personService.addPerson(newPerson);
-            } catch (ServiceException e1) {
+                view.revalidate();
+            } catch (SQLException e1) {
                 e1.printStackTrace();
             }
         }

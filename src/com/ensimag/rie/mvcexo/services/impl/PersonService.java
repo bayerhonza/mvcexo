@@ -33,21 +33,17 @@ public class PersonService {
         }
     }
 
-    public void addPerson(Person person) throws ServiceException {
+    public void addPerson(Person person) throws SQLException {
         Connection connection = getCurrentDbConnection();
-        try {
-            personDAO.addPerson(person,connection);
-        } catch (SQLException e) {
-            throw new ServiceException();
-        }
+        personDAO.addPerson(person,connection);
     }
 
-    public void updatePerson(Person person) throws ServiceException {
+    public void updatePerson(Person person) {
         Connection connection = getCurrentDbConnection();
         personDAO.updatePerson(person,connection);
     }
 
-    public void removePerson(Person person) throws ServiceException {
+    public void removePerson(Person person) throws SQLException {
         Connection connection = getCurrentDbConnection();
         personDAO.removePerson(person.getId(),connection);
     }
@@ -56,8 +52,13 @@ public class PersonService {
         return this.dbConnection;
     }
 
-    public ArrayList<Person> getAllPeople() throws ServiceException {
+    public ArrayList<Person> getAllPeople() throws SQLException {
         Connection connection = getCurrentDbConnection();
         return personDAO.getAllPeople(connection);
+    }
+
+    public boolean checkPerson(Person person) {
+        Connection connection = getCurrentDbConnection();
+        return personDAO.exists(person.getId(),connection);
     }
 }

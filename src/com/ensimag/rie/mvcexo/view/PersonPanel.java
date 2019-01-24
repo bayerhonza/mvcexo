@@ -14,9 +14,7 @@ public class PersonPanel extends JPanel {
     DeletePersonButton deleteButton;
 
     public PersonPanel(Person person, ActionListener actionListener) {
-        super(new FlowLayout(FlowLayout.RIGHT));
-        //setBorder(BorderFactory.createLineBorder(Color.BLACK,1));
-        setPreferredSize(new Dimension(300,30));
+        super(new FlowLayout(FlowLayout.CENTER));
         this.personId = person.getId();
         this.person = person;
 
