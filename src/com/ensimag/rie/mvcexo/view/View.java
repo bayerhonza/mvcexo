@@ -12,6 +12,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
+/**
+ * View vlass for the application with GUI and GUI logic.
+ */
 public class View extends JFrame {
 
     private Controller controller;
@@ -26,7 +29,6 @@ public class View extends JFrame {
     private JButton refreshButton;
     private JPanel textPanel;
 
-
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             View view = new View();
@@ -40,6 +42,10 @@ public class View extends JFrame {
         });
     }
 
+    /**
+     * Initializastion of controller and layouts of application.
+     * @throws ServiceException if DB connection fails
+     */
     public void init() throws ServiceException {
         this.controller = new Controller(this);
 
@@ -85,6 +91,10 @@ public class View extends JFrame {
 
     }
 
+    /**
+     * Removes panel assigned to Person from GUI while deletion.
+     * @param person person whose panel is to be deleted.
+     */
     public void removePersonPanel(Person person) {
         personPanels.stream()
                 .filter(personPanel -> personPanel.getPersonId() == person.getId())
@@ -95,12 +105,20 @@ public class View extends JFrame {
                 });
     }
 
+    /**
+     * Creates new panel for given person.
+     * @param person object of panel
+     */
     public void addPersonPanel(Person person) {
         PersonPanel newPersonPanel = new PersonPanel(person,controller);
         textPanel.add(newPersonPanel);
         personPanels.add(newPersonPanel);
     }
 
+    /**
+     * Handles emptying of text area after getting focus.
+     * @param jTextArea text area to set
+     */
     private void addFocusListener(JTextArea jTextArea) {
         jTextArea.addFocusListener(new FocusListener() {
             @Override

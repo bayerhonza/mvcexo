@@ -8,14 +8,15 @@ import com.ensimag.rie.mvcexo.view.AddPersonButton;
 import com.ensimag.rie.mvcexo.view.DeletePersonButton;
 import com.ensimag.rie.mvcexo.view.View;
 
-import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * Main Controller class which handles the backend logics as action listener to events of
+ * GUI.
+ */
 public class Controller implements ActionListener {
 
     private PersonService personService;
@@ -29,8 +30,15 @@ public class Controller implements ActionListener {
         this.personService = PersonService.getInstance();
     }
 
+    /**
+     * Getter of local Person service.
+     * @return service for person
+     */
     public PersonService getPersonService() { return this.personService;}
 
+    /**
+     * Loads all people peresent in the database to the memory.
+     */
     public void loadAllPeople()  {
         try {
             ArrayList<Person> personList = personService.getAllPeople();
@@ -56,7 +64,7 @@ public class Controller implements ActionListener {
             }
         } else if (source instanceof AddPersonButton) {
             AddPersonButton addPersonButton = (AddPersonButton) source;
-            String newName = addPersonButton.getName();
+            String newName = addPersonButton.getNewName();
             String newSurname = addPersonButton.getSurname();
 
             try {

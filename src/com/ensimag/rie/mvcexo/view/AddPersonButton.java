@@ -2,6 +2,9 @@ package com.ensimag.rie.mvcexo.view;
 
 import javax.swing.*;
 
+/**
+ * Class for button per person. Instances of this class are assigned to a person.
+ */
 public class AddPersonButton extends JButton {
 
     private JTextArea  nameTextArea;
@@ -13,10 +16,18 @@ public class AddPersonButton extends JButton {
         this.surnameTextArea = surnameTextArea;
     }
 
-    public String getName() {
+    /**
+     * Getter of name added in nameTextArea
+     * @return name
+     */
+    public String getNewName() {
         return nameTextArea.getText();
     }
 
+    /**
+     * Getter of name added in surnameTextArea
+     * @return surname
+     */
     public String getSurname() {
         return surnameTextArea.getText();
     }

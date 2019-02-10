@@ -6,6 +6,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
+/**
+ * Panel containing the buttons a text arrays of a person
+ */
 public class PersonPanel extends JPanel {
 
     private Integer personId;
@@ -27,6 +30,10 @@ public class PersonPanel extends JPanel {
         deleteButton.addActionListener(actionListener);
     }
 
+    /**
+     * Get ID of assigned person.
+     * @return id of person
+     */
     public Integer getPersonId() {
         return personId;
     }
