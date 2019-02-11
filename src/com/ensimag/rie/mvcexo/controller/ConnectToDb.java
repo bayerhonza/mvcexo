@@ -18,7 +18,7 @@ public class ConnectToDb {
     /**
      * Method to log to database and create connection. Works with ORACLE_JDBC_URL, LOGIN and PASSWD.
      * @return created connection
-     * @throws SQLException
+     * @throws SQLException if DB connection fails
      */
     public static Connection createConnection() throws SQLException {
         Connection connection = null;

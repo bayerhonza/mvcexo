@@ -18,7 +18,7 @@ public class Model {
 
     /**
      * Getter of list of Person instances present in the memory.
-     * @return
+     * @return list of people in the memory
      */
     public ArrayList<Person> getPeople() {
         return people;
